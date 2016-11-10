@@ -11,6 +11,29 @@ function sql_connect()
 }
 
 function sql_allplayerlist($data, $resp=[])
+{
+    
+    $dbh = sql_connect();
+    $sth = $dbh->prepare("
+        SELECT P.id AS id, P.tag AS tag, S.position AS position, P.groupname AS group
+        FROM `:player` P, `stage_position` S
+        WHERE S.teammode = :team AND S.stage = :stage AND P.tag = S.tag
+    ");
+    if ($data['team'])
+        $sth->bindParam(':player', 'team_info')
+    else
+        $sth->bindParam(':player', 'player_info')
+    $sth->bindParam(':team', $data['team'])
+    $sth->bindParam(':stage', $data['stage'])
+    if (!$sth->execute())
+        $resp['error'] = $sth->errorinfo();
+    else
+    {
+        $result = $sth->fetchAll(PDO::FETCH_COLUMN);
+        $resp['content'] = $result;
+    }
+    return $resp;
+}
 
 function sql_allwavelist($data, $resp=[])
 

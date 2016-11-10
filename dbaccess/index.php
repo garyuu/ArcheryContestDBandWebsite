@@ -1,5 +1,6 @@
 <?php
 require_once('mysql_services.php');
+require_once('hash_key.php')
 
 $command = $_POST['command'];
 $signature = $_POST['signature'];
