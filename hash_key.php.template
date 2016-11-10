@@ -1,3 +1,7 @@
 <?php
+<<<<<<< HEAD
 define('HASH_KEY', "");
+=======
+define('HASH_KEY', "DlAhpCfsLiOoESVu");
+>>>>>>> 137e48ace0bdb3f313d88e6bc25c945a0d5c5924
 ?>
