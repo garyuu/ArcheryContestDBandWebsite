@@ -23,9 +23,6 @@ else
     case "playerlistofposition":
         $resp = sql_playerlistofposition($data, $resp);
         break;
-    case "scorearray":
-        $resp = sql_scorearray($data, $resp);
-        break;
     case "savewave":
         $resp = sql_savewave($data, $resp);
         break;
