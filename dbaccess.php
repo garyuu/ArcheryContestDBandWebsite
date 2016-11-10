@@ -4,7 +4,7 @@ require_once('mysql_services.php');
 $command = $_POST['command'];
 $signature = $_POST['signature'];
 $hash_algo = 'sha256';
-$hash_key = 'DlAhpCfsLiOoESVu';
+$hash_key = HASH_KEY;
 
 if (hash_hmac($hash_algo, $command, $hash_key) != $signature)
     $resp = array('status' => "Denied");
