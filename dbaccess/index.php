@@ -1,6 +1,6 @@
 <?php
 require_once('mysql_services.php');
-require_once('hash_key.conf.php')
+require_once('hash_key.conf.php');
 
 $command = $_POST['command'];
 $signature = $_POST['signature'];
@@ -25,6 +25,9 @@ else
         break;
     case "savewave":
         $resp = sql_savewave($data, $resp);
+        break;
+    case "savestageposition":
+        $resp = sql_savestageposition($data, $resp);
         break;
     case "teamscorelist":
         $resp = sql_teamscorelist($data, $resp);

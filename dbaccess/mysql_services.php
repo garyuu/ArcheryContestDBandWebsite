@@ -20,7 +20,10 @@ function sql_allplayerlist($data, $resp=[])
     $sth = $dbh->prepare("
         SELECT P.id AS id, P.tag AS tag, S.position AS position, P.groupname AS groupname
         FROM `$type` P, `stage_position` S
-        WHERE S.teammode = :team AND S.stage = :stage AND P.tag = S.tag
+        WHERE S.teammode = :team AND
+            ((S.filterstage IS NULL AND S.stage = :stage) OR
+            S.filterstage = :stage) AND
+            P.tag = S.tag
     ");
     $sth->bindParam(':team', $data['team'], PDO::PARAM_STR);
     $sth->bindParam(':stage', $data['stage'], PDO::PARAM_STR, MAX_LENGTH_OF_STAGE);
@@ -95,6 +98,31 @@ function sql_savewave($data, $resp=[])
         $resp['error'] = $sth->errorinfo();
     else
         $resp['content'] = "ok";
+    return $resp;
+}
+
+function sql_savestageposition($data, $resp=[])
+{
+    $dbh = sql_connect();
+    $sth = $dbh->prepare("
+        INSERT INTO `stage_position` (tag, position, stage, filterstage, teammode)
+        VALUE (:tag, :position, :stage, :filter, :team)
+    ");
+    foreach ($data['table'] as $player)
+    {
+        if (!$sth->execute(array(
+            ':tag' => $player['tag'],
+            ':position' => $player['position'],
+            ':stage' => $player['stage'],
+            ':filter' => $player['filter'],
+            ':team' => $data['team']
+        )))
+        {
+            $resp['error'] = $sth->errorinfo();
+            return $resp;
+        }
+    }
+    $resp['content'] = "ok";
     return $resp;
 }
 
