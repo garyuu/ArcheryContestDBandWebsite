@@ -123,8 +123,8 @@ function sql_savestageposition($data, $resp=[])
 {
     $dbh = sql_connect();
     $sth = $dbh->prepare("
-        INSERT INTO `stage_position` (tag, position, stage, filterstage, teammode)
-        VALUE (:tag, :position, :stage, :filter, :team)
+        INSERT INTO `stage_position` (tag, position, stage, filterstage, teammode, rank)
+        VALUE (:tag, :position, :stage, :filter, :team, :rank)
     ");
     foreach ($data['table'] as $player)
     {
@@ -133,7 +133,8 @@ function sql_savestageposition($data, $resp=[])
             ':position' => $player['position'],
             ':stage' => $player['stage'],
             ':filter' => $player['filter'],
-            ':team' => $data['team']
+            ':team' => $data['team'],
+            ':rank' => $player['rank']
         )))
         {
             $resp['error'] = $sth->errorinfo();
