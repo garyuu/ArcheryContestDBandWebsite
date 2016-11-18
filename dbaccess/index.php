@@ -26,6 +26,9 @@ else
     case "savewave":
         $resp = sql_savewave($data, $resp);
         break;
+    case "modifywinner":
+        $resp = sql_modifywinner($data, $resp);
+        break;
     case "savestageposition":
         $resp = sql_savestageposition($data, $resp);
         break;

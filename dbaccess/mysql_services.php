@@ -18,12 +18,11 @@ function sql_allplayerlist($data, $resp=[])
         $type = 'player_info';
     $dbh = sql_connect();
     $sth = $dbh->prepare("
-        SELECT P.id AS id, P.tag AS tag, S.position AS position, P.groupname AS groupname
+        SELECT P.id AS id, P.tag AS tag, S.position AS position, P.groupname AS groupname, 
+               S.stage AS stage, S.rank AS rank
         FROM `$type` P, `stage_position` S
         WHERE S.teammode = :team AND
-            ((S.filterstage IS NULL AND S.stage = :stage) OR
-            S.filterstage = :stage) AND
-            P.tag = S.tag
+            (S.filterstage IS NULL AND S.stage = :stage OR S.filterstage = :stage) AND P.tag = S.tag
     ");
     $sth->bindParam(':team', $data['team'], PDO::PARAM_STR);
     $sth->bindParam(':stage', $data['stage'], PDO::PARAM_STR, MAX_LENGTH_OF_STAGE);
@@ -94,6 +93,25 @@ function sql_savewave($data, $resp=[])
     $sth->bindParam(':win', $data['winner'], PDO::PARAM_BOOL);
     for ($i=0 ; $i<6 ; $i+=1)
         $sth->bindParam('s'.($i+1), $data['shots'][$i], PDO::PARAM_INT);
+    if (!$sth->execute())
+        $resp['error'] = $sth->errorinfo();
+    else
+        $resp['content'] = "ok";
+    return $resp;
+}
+
+function sql_modifywinner($data, $resp=[])
+{
+    $dbh = sql_connect();
+    $sth = $dbh->prepare("
+        UPDATE `wave`
+        SET win = :win
+        WHERE tag = :tag AND stage = :stage AND wave = :wave
+    ");
+    $sth->bindParam(':tag', $data['tag'], PDO::PARAM_STR);
+    $sth->bindParam(':stage', $data['stage'], PDO::PARAM_STR, MAX_LENGTH_OF_STAGE);
+    $sth->bindParam(':wave', $data['wave'], PDO::PARAM_INT);
+    $sth->bindParam(':win', $data['win'], PDO::PARAM_INT);
     if (!$sth->execute())
         $resp['error'] = $sth->errorinfo();
     else
